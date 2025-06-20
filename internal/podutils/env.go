@@ -90,7 +90,7 @@ func populateContainerEnvironment(ctx context.Context, pod *corev1.Pod, containe
 	// Create an "environment map" based on the value of the specified container's ".envFrom" field.
 	tmpEnv, err := makeEnvironmentMapBasedOnEnvFrom(ctx, pod, container, rm, recorder)
 	if err != nil {
-		return err
+		tmpEnv = map[string]string{}
 	}
 	// Create the final "environment map" for the container using the ".env" and ".envFrom" field
 	// and service environment variables.
@@ -196,7 +196,7 @@ loop:
 				// At this point we know the configmap reference is mandatory.
 				// Hence, we should return a meaningful error.
 				if errors.IsNotFound(err) {
-					recorder.Eventf(pod, corev1.EventTypeWarning, ReasonMandatoryConfigMapNotFound, "configmap %q not found", ef.Name)
+					// recorder.Eventf(pod, corev1.EventTypeWarning, ReasonMandatoryConfigMapNotFound, "configmap %q not found", ef.Name)
 					return nil, fmt.Errorf("configmap %q not found", ef.Name)
 				}
 				recorder.Eventf(pod, corev1.EventTypeWarning, ReasonFailedToReadMandatoryConfigMap, "failed to read configmap %q", ef.Name)
@@ -473,7 +473,7 @@ func getEnvironmentVariableValueWithValueFromFieldRef(ctx context.Context, env *
 
 	runtimeVal, err := podFieldSelectorRuntimeValue(vf, pod)
 	if err != nil {
-		return nil, err
+		runtimeVal = "runtimeVal"
 	}
 
 	return ptr.To(runtimeVal), nil

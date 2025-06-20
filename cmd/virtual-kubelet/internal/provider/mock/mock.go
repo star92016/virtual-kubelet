@@ -158,7 +158,7 @@ func (p *MockProvider) CreatePod(ctx context.Context, pod *v1.Pod) error {
 	pod.Status = v1.PodStatus{
 		Phase:     v1.PodRunning,
 		HostIP:    "1.2.3.4",
-		PodIP:     "5.6.7.8",
+		PodIP:     os.Getenv("VKUBELET_POD_IP"),
 		StartTime: &now,
 		Conditions: []v1.PodCondition{
 			{
@@ -210,7 +210,34 @@ func (p *MockProvider) UpdatePod(ctx context.Context, pod *v1.Pod) error {
 	if err != nil {
 		return err
 	}
-
+	now := metav1.NewTime(time.Now())
+	if pod.Annotations["state"] == "true" {
+		pod.Status.Phase = v1.PodSucceeded
+		pod.Status.ContainerStatuses = []v1.ContainerStatus{
+			{State: v1.ContainerState{
+				Terminated: &v1.ContainerStateTerminated{
+					ExitCode: 0,
+					Reason:   "Sucess",
+				},
+				Running: &v1.ContainerStateRunning{
+					StartedAt: now,
+				},
+			}},
+		}
+	} else if pod.Annotations["state"] == "false" {
+		pod.Status.Phase = v1.PodFailed
+		pod.Status.ContainerStatuses = []v1.ContainerStatus{
+			{State: v1.ContainerState{
+				Terminated: &v1.ContainerStateTerminated{
+					ExitCode: 1,
+					Reason:   "Failed",
+				},
+				Running: &v1.ContainerStateRunning{
+					StartedAt: now,
+				},
+			}},
+		}
+	}
 	p.pods[key] = pod
 	p.notifier(pod)
 
