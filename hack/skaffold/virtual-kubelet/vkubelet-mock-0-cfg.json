@@ -1,7 +1,30 @@
 {
   "vkubelet-mock-0": {
-    "cpu": "2",
+    "gpu": "8",
+    "cpu": "10",
     "memory": "32Gi",
-    "pods": "128"
+    "pods": "128",
+    "others": {"nvidia.com/gpu":"8"}
+  },
+  "vkubelet-mock-1": {
+    "gpu": "8",
+    "cpu": "10",
+    "memory": "32Gi",
+    "pods": "128",
+    "others": {"nvidia.com/gpu":"8"}
+  },
+  "vkubelet-mock-2": {
+    "gpu": "8",
+    "cpu": "10",
+    "memory": "32Gi",
+    "pods": "128",
+    "others": {"nvidia.com/gpu":"8"}
+  },
+  "vkubelet-mock-3": {
+    "gpu": "8",
+    "cpu": "10",
+    "memory": "32Gi",
+    "pods": "128",
+    "others": {"nvidia.com/gpu":"8"}
   }
 }
